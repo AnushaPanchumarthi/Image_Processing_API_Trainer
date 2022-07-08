@@ -43,9 +43,10 @@ var supertest_1 = __importDefault(require("supertest"));
 var index_1 = __importDefault(require("../index"));
 var fs_1 = require("fs");
 var path_1 = __importDefault(require("path"));
+var imageProcessor_1 = __importDefault(require("../utilities/imageProcessor"));
 var request = (0, supertest_1.default)(index_1.default);
-var filePath = path_1.default.join(__dirname, '../../assetts/full/');
-var fileName = 'GoldenWords';
+var testFilePath = path_1.default.join(__dirname, '../../assetts/full/');
+var testFileName = 'GoldenWords';
 var exTnsn = '.jpeg';
 var sourcePath = path_1.default.join(__dirname, '../../assetts/');
 describe('Test for the primary images endpoint', function () {
@@ -65,10 +66,24 @@ describe('Test for the primary images endpoint', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get("/api/images?filename=".concat(fileName, "&width=800&height=800"))];
+                case 0: return [4 /*yield*/, request.get("/api/images?filename=".concat(testFileName, "&width=800&height=800"))];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(200);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('image resize not to throw any error', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var testWidth, testHeight;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    testWidth = '700';
+                    testHeight = '700';
+                    return [4 /*yield*/, expectAsync(imageProcessor_1.default.imageProcessor(testFileName, testWidth, testHeight)).toBeResolved()];
+                case 1:
+                    _a.sent();
                     return [2 /*return*/];
             }
         });
@@ -91,7 +106,7 @@ describe('Test for the primary images endpoint', function () {
 describe('Test for the error scenarios', function () {
     //remove the files
     beforeAll(function () {
-        var procssdFile = path_1.default.join(filePath, fileName + exTnsn);
+        var procssdFile = path_1.default.join(testFilePath, testFileName + exTnsn);
         console.log('processed file' + procssdFile);
         fs_1.promises
             .unlink(procssdFile)
@@ -140,8 +155,8 @@ describe('Test for the error scenarios', function () {
     }); });
     //copy the files to full directory
     afterAll(function () {
-        var sourceFile = path_1.default.join(sourcePath, fileName + exTnsn);
-        var targetFile = path_1.default.join(filePath, fileName + exTnsn);
+        var sourceFile = path_1.default.join(sourcePath, testFileName + exTnsn);
+        var targetFile = path_1.default.join(testFilePath, testFileName + exTnsn);
         fs_1.promises
             .copyFile(sourceFile, targetFile)
             .then(function () {
