@@ -8,7 +8,7 @@ var express_1 = __importDefault(require("express"));
 var indexRoute_1 = __importDefault(require("./routes/indexRoute"));
 var app = (0, express_1.default)();
 var port = 3000;
-//stratin point for the route api
+//Initial point for the route api
 app.use('/api', indexRoute_1.default);
 app.get('/', function (req, res) {
     res.send('Image Processor API');
