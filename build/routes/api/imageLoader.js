@@ -70,7 +70,8 @@ imageLoader.get('/', function (req, res) { return __awaiter(void 0, void 0, void
                     width.length === 0 ||
                     height == null ||
                     height == undefined ||
-                    height.length === 0) { //check for defined input params
+                    height.length === 0) {
+                    //check for defined input params
                     res.status(403).send('Missing Filename or Width or Height in the URL');
                 }
                 else if (!(parseInt(width) > 0 && parseInt(height) > 0)) {
@@ -87,7 +88,7 @@ imageLoader.get('/', function (req, res) { return __awaiter(void 0, void 0, void
                 }
                 else {
                     console.log('Image Processing in Progess');
-                    //create the directory for thumbnails if doesn't exist
+                    //create the directory for thumb if doesn't exist
                     if (!fs_2.default.existsSync(thumbFilePath)) {
                         try {
                             fs_1.promises.mkdir(thumbFilePath);
@@ -96,11 +97,24 @@ imageLoader.get('/', function (req, res) { return __awaiter(void 0, void 0, void
                             console.log('Error while creating directory');
                         }
                     }
-                    //invoke the imageprocessor to resize the image
-                    //replace the image if thumb folder already contains image with same width and height
-                    imageProcessor_1.default.imageProcessor(fileName, width, height).then(function () {
+                    //check if the resized image exists with the same dimensions.
+                    //if so serve the cached image
+                    if (fs_2.default
+                        .readdirSync(thumbFilePath)
+                        .toString()
+                        .includes("".concat(fileName + width + height, ".jpeg"))) {
+                        console.log('serving the cached image');
                         res.sendFile("".concat(thumbFilePath + fileName + width + height, ".jpeg"));
-                    });
+                    }
+                    else {
+                        //invoke the imageprocessor to resize the image
+                        //replace the image if thumb folder already contains image with same width and height
+                        imageProcessor_1.default
+                            .imageProcessor(fileName, width, height)
+                            .then(function () {
+                            res.sendFile("".concat(thumbFilePath + fileName + width + height, ".jpeg"));
+                        });
+                    }
                 }
                 return [2 /*return*/];
         }
