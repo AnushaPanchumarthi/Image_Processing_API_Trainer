@@ -3,7 +3,7 @@ import imageLoader from './api/imageLoader';
 
 const routes = express.Router();
 
-routes.get('/', (req, res) => {
+routes.get('/', function (req: express.Request, res: express.Response): void {
   res.send('sending main api route');
 });
 
